@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cliente WebSocket</title>
+</head>
+<body>
+    <form onsubmit="sendMessage(event)">
+        <label for="message">Mensagem:</label>
+        <input id="message" />
+        <button type="submit">Enviar</button>
+    </form>
+    <div id="chatbox"></div>
+    <script>
+        const socket = new WebSocket('ws://localhost:8080')
+        const chatbox = document.getElementById('chatbox')
+        
+        socket.addEventListener('open', function (event) {
+            console.log('websocket connected')
+        })
+        
+        socket.addEventListener('message', function (event) {
+            const message = document.createElement('p')
+            message.textContent = event.data
+            chatbox.appendChild(message)
+        })
+
+        function sendMessage(event) {
+            event.preventDefault()
+            const message = document.getElementById('message').value
+            socket.send(message)
+            const m = document.createElement('p')
+            m.textContent = `Eu: ${message}`
+            chatbox.appendChild(m)
+            document.getElementById('message').value = ''
+        }
+    </script>
+</body>
+</html>
